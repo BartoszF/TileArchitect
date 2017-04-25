@@ -10,11 +10,6 @@ namespace TileArchitect
 {
     class Tile
     {
-        public static readonly int Size = 32;
-        public static readonly int ImagePointSize = 24;
-        public static readonly int ImageSize = ImagePointSize * 5;
-        public static readonly int SizeOnPage = 256;
-        public static readonly Point offset = new Point(32, 32);
         public TilePoint[,] points;
         Form1 form;
         public Image image;
@@ -101,17 +96,17 @@ namespace TileArchitect
 
         public Image toImage()
         {
-            Bitmap temp = new Bitmap(Tile.ImagePointSize * 5, Tile.ImagePointSize * 5);
+            Bitmap temp = new Bitmap(Settings.ImagePointSize * 5, Settings.ImagePointSize * 5);
             for (int y = 0; y < 5; y++)
             {
                 for (int x = 0; x < 5; x++)
                 {
                     TilePoint point = points[x, y];
-                    for(int py=0;py<Tile.ImagePointSize;py++)
+                    for(int py=0;py< Settings.ImagePointSize;py++)
                     {
-                        for (int px = 0; px < Tile.ImagePointSize; px++)
+                        for (int px = 0; px < Settings.ImagePointSize; px++)
                         {
-                            temp.SetPixel(x* Tile.ImagePointSize + px, y* Tile.ImagePointSize + py, point.status ? Color.Black : Color.White);
+                            temp.SetPixel(x* Settings.ImagePointSize + px, y* Settings.ImagePointSize + py, point.status ? Color.Black : Color.White);
                         }
                     }
                 }
@@ -126,7 +121,7 @@ namespace TileArchitect
                 for (int x = 0; x < 5; x++)
                 {
                     TilePoint point = points[x, y];
-                    float offset = ((float)Tile.SizeOnPage) / 5;
+                    float offset = ((float)Settings.SizeOnPage) / 5;
                     ev.Graphics.DrawRectangle(new Pen(Color.Black), xpos + x * offset, ypos+ y * offset, offset, offset);
                     if (point.status)
                     {

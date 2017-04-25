@@ -20,15 +20,20 @@ namespace TileArchitect
 
         private Font printFont;
 
+        private SettingsForm settingsForm;
+
         public Form1()
         {
             InitializeComponent();
             tile = new Tile("Tile" + tileList.Items.Count,this);
 
-            imageList1.ImageSize = new Size(Tile.ImageSize, Tile.ImageSize);
+            imageList1.ImageSize = new Size(Settings.ImageSize, Settings.ImageSize);
             tileList.LargeImageList = imageList1;
 
             saveTile.Enabled = false;
+
+            settingsForm = new SettingsForm();
+            settingsForm.Hide();
         }
 
         private void AddTileButton_Click(object sender, EventArgs e)
@@ -87,9 +92,9 @@ namespace TileArchitect
 
             Rectangle bounds = ev.PageBounds;
 
-            while(yPos + Tile.SizeOnPage < bounds.Height)
+            while(yPos + Settings.SizeOnPage < bounds.Height)
             {
-                while(xPos + Tile.SizeOnPage < bounds.Width)
+                while(xPos + Settings.SizeOnPage < bounds.Width)
                 {
                     if(printTiles.Count <= printedTiles)
                     {
@@ -97,13 +102,13 @@ namespace TileArchitect
                     }
                     Tile temp = printTiles[printedTiles];
                     temp.Print(ev, xPos, yPos);
-                    ev.Graphics.DrawRectangle(new Pen(Brushes.Black), xPos, yPos, Tile.SizeOnPage + 1, Tile.SizeOnPage + 1);
+                    ev.Graphics.DrawRectangle(new Pen(Brushes.Black), xPos, yPos, Settings.SizeOnPage + 1, Settings.SizeOnPage + 1);
 
-                    xPos += Tile.SizeOnPage + 1;
+                    xPos += Settings.SizeOnPage + 1;
                     printedTiles++;
                 }
                 xPos = 0;
-                yPos += Tile.SizeOnPage+1;
+                yPos += Settings.SizeOnPage+1;
             }
 
             if (printedTiles != printTiles.Count)
@@ -153,6 +158,20 @@ namespace TileArchitect
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
+        }
+
+        private void settingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (settingsForm == null)
+            {
+                settingsForm = new SettingsForm();
+                
+            }
+            else
+            {
+                settingsForm.Show();
+            }
+
         }
     }
 }

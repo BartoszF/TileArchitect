@@ -28,9 +28,9 @@ namespace TileArchitect
         public void BuildButton()
         {
             button = new Button();
-            button.Width = Tile.Size;
-            button.Height = Tile.Size;
-            button.Location = new Point(X * Tile.Size + Tile.offset.X, Y * Tile.Size + Tile.offset.Y);
+            button.Width = Settings.Size;
+            button.Height = Settings.Size;
+            button.Location = new Point(X * Settings.Size + Settings.offset.X, Y * Settings.Size + Settings.offset.Y);
             button.Click += click;
             button.Parent = form;
             button.BackColor = status ? Color.Black : Color.White;
