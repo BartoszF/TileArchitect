@@ -1,51 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TileArchitect
 {
     class Tile
     {
-        public TilePoint[,] points;
-        Form1 form;
-        public Image image;
-        public string name;
+        public TilePoint[,] Points;
+        readonly Form1 _form;
+        public Image Image;
+        public string Name;
 
         public Tile(Form1 form)
         {
-            this.form = form;
-            points = new TilePoint[5, 5];
+            this._form = form;
+            Points = new TilePoint[5, 5];
         }
+
         public Tile(string name, Form1 form)
         {
-            this.form = form;
-            this.name = name;
-            points = new TilePoint[5, 5];
-            for(int y = 0;y<5;y++)
+            this._form = form;
+            Name = name;
+            Points = new TilePoint[5, 5];
+            for (int y = 0; y < 5; y++)
             {
-                for(int x=0;x<5;x++)
+                for (int x = 0; x < 5; x++)
                 {
-                    points[x, y] = new TilePoint(x,y, form);
-                    points[x, y].BuildButton();
+                    Points[x, y] = new TilePoint(x, y, form);
+                    Points[x, y].BuildButton();
                 }
             }
         }
 
         public Tile(Tile tile)
         {
-            this.form = tile.form;
-            this.name = tile.name;
-            this.points = tile.points;
+            this._form = tile._form;
+            this.Name = tile.Name;
+            this.Points = tile.Points;
 
             for (int y = 0; y < 5; y++)
             {
                 for (int x = 0; x < 5; x++)
                 {
-                    points[x, y].BuildButton();
+                    Points[x, y].BuildButton();
                 }
             }
         }
@@ -53,15 +49,15 @@ namespace TileArchitect
         public void Load(string tile)
         {
             string[] lines = tile.Split('\n');
-            this.name = lines[0];
-            for(int y=0;y<5;y++)
+            this.Name = lines[0];
+            for (int y = 0; y < 5; y++)
             {
                 string line = lines[y + 1];
                 string[] statuses = line.Split(' ');
-                for(int x=0;x<5;x++)
+                for (int x = 0; x < 5; x++)
                 {
-                    points[x, y] = new TilePoint(x, y, form);
-                    points[x, y].status = statuses[x] == "1" ? true : false;
+                    Points[x, y] = new TilePoint(x, y, _form);
+                    Points[x, y].Status = statuses[x] == "1" ? true : false;
                 }
             }
         }
@@ -72,21 +68,21 @@ namespace TileArchitect
             {
                 for (int x = 0; x < 5; x++)
                 {
-                    points[x, y].Destroy();
+                    Points[x, y].Destroy();
                 }
             }
         }
-       
+
 
         public string Save()
         {
             string saved = "";
-            saved += name + "\n";
-            for(int y =0;y<5;y++)
+            saved += Name + "\n";
+            for (int y = 0; y < 5; y++)
             {
-                for(int x=0;x<5;x++)
+                for (int x = 0; x < 5; x++)
                 {
-                    saved += (points[x, y].status ? "1" : "0") + " ";
+                    saved += (Points[x, y].Status ? "1" : "0") + " ";
                 }
                 saved += "\n";
             }
@@ -94,19 +90,20 @@ namespace TileArchitect
             return saved;
         }
 
-        public Image toImage()
+        public Image ToImage()
         {
             Bitmap temp = new Bitmap(Settings.ImagePointSize * 5, Settings.ImagePointSize * 5);
             for (int y = 0; y < 5; y++)
             {
                 for (int x = 0; x < 5; x++)
                 {
-                    TilePoint point = points[x, y];
-                    for(int py=0;py< Settings.ImagePointSize;py++)
+                    TilePoint point = Points[x, y];
+                    for (int py = 0; py < Settings.ImagePointSize; py++)
                     {
                         for (int px = 0; px < Settings.ImagePointSize; px++)
                         {
-                            temp.SetPixel(x* Settings.ImagePointSize + px, y* Settings.ImagePointSize + py, point.status ? Color.Black : Color.White);
+                            temp.SetPixel(x * Settings.ImagePointSize + px, y * Settings.ImagePointSize + py,
+                                point.Status ? Color.Black : Color.White);
                         }
                     }
                 }
@@ -120,12 +117,13 @@ namespace TileArchitect
             {
                 for (int x = 0; x < 5; x++)
                 {
-                    TilePoint point = points[x, y];
-                    float offset = ((float)Settings.SizeOnPage) / 5;
-                    ev.Graphics.DrawRectangle(new Pen(Color.Black), xpos + x * offset, ypos+ y * offset, offset, offset);
-                    if (point.status)
+                    TilePoint point = Points[x, y];
+                    float offset = ((float) Settings.SizeOnPage) / 5;
+                    ev.Graphics.DrawRectangle(new Pen(Color.Black), xpos + x * offset, ypos + y * offset, offset,
+                        offset);
+                    if (point.Status)
                     {
-                        ev.Graphics.FillRectangle(Brushes.Gray, xpos+x * offset, ypos+y * offset, offset, offset);
+                        ev.Graphics.FillRectangle(Brushes.Gray, xpos + x * offset, ypos + y * offset, offset, offset);
                     }
                 }
             }

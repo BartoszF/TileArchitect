@@ -19,7 +19,6 @@ namespace TileArchitect
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-
         }
 
         private void button1_Click(object sender, EventArgs e)

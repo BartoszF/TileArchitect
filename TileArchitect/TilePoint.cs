@@ -11,9 +11,9 @@ namespace TileArchitect
     class TilePoint
     {
         public int X, Y;
-        public bool status = false;
-        public Button button;
-        public Form1 form;
+        public bool Status = false;
+        public Button Button;
+        public Form1 Form;
 
         public TilePoint(int X, int Y, Form1 form)
         {
@@ -22,38 +22,32 @@ namespace TileArchitect
 
             BuildButton();
 
-            this.form = form;
+            Form = form;
         }
 
         public void BuildButton()
         {
-            button = new Button();
-            button.Width = Settings.Size;
-            button.Height = Settings.Size;
-            button.Location = new Point(X * Settings.Size + Settings.offset.X, Y * Settings.Size + Settings.offset.Y);
-            button.Click += click;
-            button.Parent = form;
-            button.BackColor = status ? Color.Black : Color.White;
+            Button = new Button
+            {
+                Width = Settings.Size,
+                Height = Settings.Size,
+                Location = new Point(X * Settings.Size + Settings.Offset.X, Y * Settings.Size + Settings.Offset.Y)
+            };
+            Button.Click += Click;
+            Button.Parent = Form;
+            Button.BackColor = Status ? Color.Black : Color.White;
         }
 
         public void Destroy()
         {
-            form.Controls.Remove(button);
-            button = null;
-
+            Form.Controls.Remove(Button);
+            Button = null;
         }
 
-        private void click(object sender, System.EventArgs e)
+        private void Click(object sender, System.EventArgs e)
         {
-            this.status = !this.status;
-            if(status)
-            {
-                button.BackColor = Color.Black;
-            }
-            else
-            {
-                button.BackColor = Color.White;
-            }
+            this.Status = !this.Status;
+            Button.BackColor = Status ? Color.Black : Color.White;
         }
     }
 }

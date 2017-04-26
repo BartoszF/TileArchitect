@@ -13,6 +13,6 @@ namespace TileArchitect
         public static int ImagePointSize = 24;
         public static int ImageSize = ImagePointSize * 5;
         public static int SizeOnPage = 256;
-        public static Point offset = new Point(32, 32);
+        public static Point Offset = new Point(32, 32);
     }
 }

@@ -14,107 +14,105 @@ namespace TileArchitect
 {
     public partial class Form1 : Form
     {
-        Tile tile;
-        List<Tile> printTiles = new List<Tile>();
-        int printedTiles = 0;
+        Tile _tile;
+        List<Tile> _printTiles = new List<Tile>();
+        int _printedTiles = 0;
 
-        private Font printFont;
+        private Font _printFont;
 
-        private SettingsForm settingsForm;
+        private SettingsForm _settingsForm;
 
         public Form1()
         {
             InitializeComponent();
-            tile = new Tile("Tile" + tileList.Items.Count,this);
+            _tile = new Tile("Tile" + tileList.Items.Count, this);
 
             imageList1.ImageSize = new Size(Settings.ImageSize, Settings.ImageSize);
             tileList.LargeImageList = imageList1;
 
             saveTile.Enabled = false;
 
-            settingsForm = new SettingsForm();
-            settingsForm.Hide();
+            _settingsForm = new SettingsForm();
+            _settingsForm.Hide();
         }
 
         private void AddTileButton_Click(object sender, EventArgs e)
         {
-            imageList1.Images.Add(tile.name, tile.toImage());
-            var listViewItem = tileList.Items.Add(tile.name);
-            listViewItem.ImageKey = tile.name;
-            listViewItem.Name = tile.name;
-            listViewItem.Tag = tile;
-            tile.Destroy();
-            tile = new Tile("Tile" + tileList.Items.Count,this);
+            imageList1.Images.Add(_tile.Name, _tile.ToImage());
+            var listViewItem = tileList.Items.Add(_tile.Name);
+            listViewItem.ImageKey = _tile.Name;
+            listViewItem.Name = _tile.Name;
+            listViewItem.Tag = _tile;
+            _tile.Destroy();
+            _tile = new Tile("Tile" + tileList.Items.Count, this);
             saveTile.Enabled = false;
         }
 
         private void saveTile_Click(object sender, EventArgs e)
         {
-            var listViewItem = tileList.Items.Find(tile.name,false).First<ListViewItem>();
-            listViewItem.Tag = tile;
-            imageList1.Images.RemoveByKey(tile.name);
-            imageList1.Images.Add(tile.name, tile.toImage());
+            var listViewItem = tileList.Items.Find(_tile.Name, false).First<ListViewItem>();
+            listViewItem.Tag = _tile;
+            imageList1.Images.RemoveByKey(_tile.Name);
+            imageList1.Images.Add(_tile.Name, _tile.ToImage());
             tileList.Refresh();
         }
 
         private void tileList_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            tile.Destroy();
-            tile = new Tile((Tile)e.Item.Tag);
+            _tile.Destroy();
+            _tile = new Tile((Tile) e.Item.Tag);
             saveTile.Enabled = true;
         }
 
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            printTiles.Clear();
-            foreach(ListViewItem item in tileList.Items)
+            _printTiles.Clear();
+            foreach (ListViewItem item in tileList.Items)
             {
-                printTiles.Add((Tile)item.Tag);
+                _printTiles.Add((Tile) item.Tag);
             }
-            printFont = new Font("Arial", 10);
-            printedTiles = 0;
+            _printFont = new Font("Arial", 10);
+            _printedTiles = 0;
             PrintDocument doc = new PrintDocument();
             doc.DocumentName = "Tiles";
             doc.PrintPage += new PrintPageEventHandler
-                   (this.pd_PrintPage);
+                (this.pd_PrintPage);
             printPreviewDialog1.Document = doc;
             printPreviewDialog1.ShowDialog();
         }
 
         private void pd_PrintPage(object sender, PrintPageEventArgs ev)
         {
-            if(!ev.HasMorePages)
+            if (!ev.HasMorePages)
             {
-                printedTiles = 0;
+                _printedTiles = 0;
             }
             float yPos = 0;
             float xPos = 0;
 
             Rectangle bounds = ev.PageBounds;
 
-            while(yPos + Settings.SizeOnPage < bounds.Height)
+            while (yPos + Settings.SizeOnPage < bounds.Height)
             {
-                while(xPos + Settings.SizeOnPage < bounds.Width)
+                while (xPos + Settings.SizeOnPage < bounds.Width)
                 {
-                    if(printTiles.Count <= printedTiles)
+                    if (_printTiles.Count <= _printedTiles)
                     {
                         return;
                     }
-                    Tile temp = printTiles[printedTiles];
+                    Tile temp = _printTiles[_printedTiles];
                     temp.Print(ev, xPos, yPos);
-                    ev.Graphics.DrawRectangle(new Pen(Brushes.Black), xPos, yPos, Settings.SizeOnPage + 1, Settings.SizeOnPage + 1);
+                    ev.Graphics.DrawRectangle(new Pen(Brushes.Black), xPos, yPos, Settings.SizeOnPage + 1,
+                        Settings.SizeOnPage + 1);
 
                     xPos += Settings.SizeOnPage + 1;
-                    printedTiles++;
+                    _printedTiles++;
                 }
                 xPos = 0;
-                yPos += Settings.SizeOnPage+1;
+                yPos += Settings.SizeOnPage + 1;
             }
 
-            if (printedTiles != printTiles.Count)
-                ev.HasMorePages = true;
-            else
-                ev.HasMorePages = false;
+            ev.HasMorePages = _printedTiles != _printTiles.Count;
         }
 
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
@@ -122,7 +120,7 @@ namespace TileArchitect
             string result = "";
             foreach (ListViewItem item in tileList.Items)
             {
-                Tile temp = (Tile)item.Tag;
+                Tile temp = (Tile) item.Tag;
                 result += temp.Save();
             }
 
@@ -138,21 +136,20 @@ namespace TileArchitect
         {
             tileList.Items.Clear();
             string[] loaded = File.ReadAllLines(openFileDialog1.FileName);
-            for(int i=0;i<loaded.Length;i+=6)
+            for (int i = 0; i < loaded.Length; i += 6)
             {
                 Tile temp = new Tile(this);
                 string joined = String.Join("\n", loaded, i, 6);
                 temp.Load(joined);
-                imageList1.Images.Add(temp.name, temp.toImage());
-                var listViewItem = tileList.Items.Add(temp.name);
-                listViewItem.ImageKey = temp.name;
-                listViewItem.Name = temp.name;
+                imageList1.Images.Add(temp.Name, temp.ToImage());
+                var listViewItem = tileList.Items.Add(temp.Name);
+                listViewItem.ImageKey = temp.Name;
+                listViewItem.Name = temp.Name;
                 listViewItem.Tag = temp;
             }
 
-            tile.Destroy();
-            tile = new Tile("Tile" + tileList.Items.Count, this);
-
+            _tile.Destroy();
+            _tile = new Tile("Tile" + tileList.Items.Count, this);
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -162,16 +159,14 @@ namespace TileArchitect
 
         private void settingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (settingsForm == null)
+            if (_settingsForm == null)
             {
-                settingsForm = new SettingsForm();
-                
+                _settingsForm = new SettingsForm();
             }
             else
             {
-                settingsForm.Show();
+                _settingsForm.Show();
             }
-
         }
     }
 }
